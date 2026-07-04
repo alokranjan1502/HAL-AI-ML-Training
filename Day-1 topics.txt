@@ -1,0 +1,550 @@
+That's even better. For a **manufacturing company**, the training will be much more impactful if **every concept uses manufacturing datasets and realistic industrial scenarios** rather than generic datasets like housing or breast cancer.
+
+I would redesign the session around a **single manufacturing plant case study**, where participants play the role of a Data Analyst supporting production, quality, and maintenance teams.
+
+---
+
+# Corporate Training (3 Hours)
+
+# Machine Learning & Artificial Neural Networks for Manufacturing Data Analysis
+
+## Learning Objective
+
+By the end of this session, participants will be able to:
+
+* Understand how Machine Learning is applied in manufacturing
+* Build predictive models using structured manufacturing data
+* Perform regression, classification, clustering, time series forecasting, and anomaly detection
+* Understand when to use Artificial Neural Networks (ANNs)
+* Interpret ML model outputs for operational decision-making
+
+---
+
+# Manufacturing Case Study
+
+## Company Background
+
+A manufacturing company produces industrial pumps using multiple production lines.
+
+Every machine generates structured data from sensors and production systems.
+
+### Available Data
+
+| Machine_ID | Temperature | Pressure | Vibration | RPM | Power | Operator | Shift | Material | Defect | Production | Energy | Downtime |
+| ---------- | ----------- | -------- | --------- | --- | ----- | -------- | ----- | -------- | ------ | ---------- | ------ | -------- |
+
+Participants will use this single dataset throughout the session.
+
+---
+
+# Session Agenda
+
+| Time   | Topic              | Manufacturing Use Case             |
+| ------ | ------------------ | ---------------------------------- |
+| 20 min | Introduction to ML | Manufacturing Analytics Overview   |
+| 30 min | Regression         | Predict Machine Energy Consumption |
+| 30 min | Classification     | Predict Product Defects            |
+| 25 min | Clustering         | Machine Health Segmentation        |
+| 20 min | Time Series        | Production Forecasting             |
+| 15 min | Anomaly Detection  | Abnormal Machine Behavior          |
+| 25 min | ANN                | Predict Equipment Failure          |
+| 15 min | Case Study + Quiz  | Select Right ML Model              |
+
+---
+
+# Part 1
+
+## Introduction to Machine Learning
+
+### Manufacturing Applications
+
+Predictive Maintenance
+
+Quality Inspection
+
+Equipment Failure Prediction
+
+Demand Forecasting
+
+Inventory Optimization
+
+Root Cause Analysis
+
+Yield Improvement
+
+Process Optimization
+
+Energy Optimization
+
+Visual Inspection
+
+---
+
+## Types of ML
+
+### Supervised Learning
+
+Known Output
+
+Examples
+
+Predict
+
+* Machine Failure
+* Product Quality
+* Energy Consumption
+* Cycle Time
+
+---
+
+### Unsupervised Learning
+
+Unknown Output
+
+Examples
+
+* Machine Segmentation
+* Production Pattern Discovery
+* Shift Analysis
+
+---
+
+### Deep Learning
+
+Examples
+
+* Sensor Data
+* Image Inspection
+* Robotics
+
+---
+
+# Hands-on Dataset
+
+Create manufacturing data
+
+```python
+import pandas as pd
+import numpy as np
+
+np.random.seed(42)
+
+n=5000
+
+df=pd.DataFrame({
+
+'Temperature':np.random.normal(75,5,n),
+
+'Pressure':np.random.normal(35,4,n),
+
+'Vibration':np.random.normal(2.5,0.5,n),
+
+'RPM':np.random.randint(1200,2500,n),
+
+'Power':np.random.randint(50,150,n),
+
+'Production':np.random.randint(400,1000,n),
+
+'Energy':np.random.randint(300,600,n),
+
+'Downtime':np.random.randint(0,10,n)
+
+})
+
+df.head()
+```
+
+---
+
+# Module 2 (Regression)
+
+## Business Problem
+
+Predict Machine Energy Consumption
+
+Target
+
+Energy
+
+Features
+
+Temperature
+
+Pressure
+
+RPM
+
+Power
+
+Production
+
+---
+
+```python
+from sklearn.model_selection import train_test_split
+
+X=df[['Temperature','Pressure','RPM','Power','Production']]
+
+y=df['Energy']
+
+X_train,X_test,y_train,y_test=train_test_split(
+X,y,test_size=.2,random_state=42)
+```
+
+---
+
+Model
+
+```python
+from sklearn.ensemble import RandomForestRegressor
+
+model=RandomForestRegressor()
+
+model.fit(X_train,y_train)
+
+pred=model.predict(X_test)
+```
+
+---
+
+Evaluation
+
+RMSE
+
+MAE
+
+R²
+
+---
+
+Discussion
+
+Which variables consume maximum energy?
+
+Feature Importance
+
+---
+
+# Module 3 (Classification)
+
+## Business Problem
+
+Predict Product Defect
+
+New Column
+
+```python
+df['Defect']=(
+(df['Temperature']>80) &
+(df['Vibration']>3)
+).astype(int)
+```
+
+---
+
+Model
+
+Random Forest
+
+```python
+from sklearn.ensemble import RandomForestClassifier
+
+model=RandomForestClassifier()
+
+model.fit(X_train,y_train)
+```
+
+---
+
+Evaluation
+
+Accuracy
+
+Precision
+
+Recall
+
+Confusion Matrix
+
+---
+
+Business Discussion
+
+Which machines are likely to produce defective products?
+
+---
+
+# Module 4
+
+## Clustering
+
+Business Question
+
+Can we automatically group machines?
+
+Use
+
+Temperature
+
+Pressure
+
+Vibration
+
+Power
+
+---
+
+```python
+from sklearn.cluster import KMeans
+
+X=df[['Temperature',
+'Pressure',
+'Vibration',
+'Power']]
+
+model=KMeans(n_clusters=4)
+
+df['Cluster']=model.fit_predict(X)
+```
+
+---
+
+Interpretation
+
+Cluster 1
+
+Healthy Machines
+
+Cluster 2
+
+High Energy
+
+Cluster 3
+
+High Temperature
+
+Cluster 4
+
+High Vibration
+
+---
+
+Business Action
+
+Maintenance Schedule
+
+---
+
+# Module 5
+
+## Time Series Forecasting
+
+Business Question
+
+Predict Tomorrow's Production
+
+Dataset
+
+| Date | Production |
+| ---- | ---------- |
+
+---
+
+Generate Data
+
+```python
+dates=pd.date_range("2025-01-01",periods=365)
+
+sales=np.random.randint(700,1000,365)
+
+production=pd.DataFrame({
+
+'Date':dates,
+
+'Production':sales
+
+})
+```
+
+Forecast
+
+```python
+from statsmodels.tsa.holtwinters import ExponentialSmoothing
+
+model=ExponentialSmoothing(
+
+production['Production'],
+
+trend='add'
+
+)
+
+fit=model.fit()
+
+forecast=fit.forecast(30)
+```
+
+Discussion
+
+Production Planning
+
+Capacity Planning
+
+Inventory
+
+---
+
+# Module 6
+
+## Anomaly Detection
+
+Business Question
+
+Detect abnormal machines
+
+Algorithm
+
+Isolation Forest
+
+```python
+from sklearn.ensemble import IsolationForest
+
+X=df[['Temperature',
+'Pressure',
+'Vibration',
+'Power']]
+
+model=IsolationForest(
+
+contamination=.02
+
+)
+
+df['Anomaly']=model.fit_predict(X)
+```
+
+Business Meaning
+
+Machines
+
+* overheating
+* excessive vibration
+* abnormal power usage
+
+Need preventive maintenance.
+
+---
+
+# Module 7
+
+# Artificial Neural Networks
+
+## Business Problem
+
+Predict Equipment Failure
+
+Create Target
+
+```python
+df['Failure']=(
+(df['Temperature']>82)&
+(df['Vibration']>3.2)&
+(df['Power']>120)
+).astype(int)
+```
+
+---
+
+Model
+
+```python
+from tensorflow.keras.models import Sequential
+
+from tensorflow.keras.layers import Dense
+
+model=Sequential()
+
+model.add(Dense(16,activation='relu'))
+
+model.add(Dense(8,activation='relu'))
+
+model.add(Dense(1,activation='sigmoid'))
+```
+
+Compile
+
+```python
+model.compile(
+
+optimizer='adam',
+
+loss='binary_crossentropy',
+
+metrics=['accuracy']
+
+)
+```
+
+Train
+
+```python
+model.fit(
+
+X_train,
+
+y_train,
+
+epochs=20,
+
+batch_size=32
+
+)
+```
+
+---
+
+Discussion
+
+Traditional ML vs ANN
+
+| Random Forest    | ANN                            |
+| ---------------- | ------------------------------ |
+| Smaller datasets | Large datasets                 |
+| Easy to explain  | Captures complex patterns      |
+| Fast training    | Longer training                |
+| Lower compute    | Higher compute (GPU preferred) |
+
+---
+
+# Final Case Study (15 Minutes)
+
+The plant manager asks your analytics team to solve the following problems:
+
+| Business Problem                                        | Recommended Technique     |
+| ------------------------------------------------------- | ------------------------- |
+| Predict machine energy consumption                      | Regression                |
+| Predict defective products                              | Classification            |
+| Group machines by operating behavior                    | Clustering                |
+| Forecast daily production                               | Time Series               |
+| Detect abnormal machine behavior                        | Anomaly Detection         |
+| Predict equipment failure from multiple sensor readings | Artificial Neural Network |
+
+---
+
+## Suggested Dataset Enhancements
+
+To make the session realistic, enrich the dataset with additional manufacturing features:
+
+| Category            | Example Columns                                                           |
+| ------------------- | ------------------------------------------------------------------------- |
+| Machine Information | Machine_ID, Production_Line, Machine_Type, Installation_Year              |
+| Process Parameters  | Temperature, Pressure, RPM, Vibration, Coolant_Flow, Torque, Cycle_Time   |
+| Production Metrics  | Units_Produced, Scrap_Count, Rework_Count, Yield_Percentage, OEE          |
+| Energy Metrics      | Power_Consumption, Energy_Cost, Compressed_Air_Usage                      |
+| Quality Metrics     | Defect_Type, Surface_Roughness, Dimensional_Error, Pass/Fail              |
+| Maintenance Data    | Downtime_Minutes, Maintenance_Type, Time_Since_Last_Service, Failure_Code |
+| Operational Context | Operator_ID, Shift, Material_Grade, Ambient_Temperature, Humidity         |
+
+### Why this design works for corporate manufacturing training
+
+This approach uses **one integrated manufacturing dataset** throughout the session, allowing participants to solve different business problems with the same data. This mirrors how analytics teams work in real factories and helps learners understand that the choice of algorithm depends on the business objective—not on switching datasets. It also provides a natural progression from traditional machine learning techniques to ANN-based predictive maintenance, making the session highly relevant for Industry 4.0 and Smart Manufacturing initiatives.
